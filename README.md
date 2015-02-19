@@ -22,10 +22,12 @@ Get the source:
 Browse the source on GitHub: <http://github.com/dvska/django-admin-ip-whitelist>
 
 Clone with Git:
+
     $ git clone git://github.com/dvska/django-admin-ip-whitelist
 
 
 Install via easy_install or pip
+
     easy_install django-admin-ip-whitelist
     pip install django-admin-ip-whitelist
 
