@@ -18,10 +18,10 @@ class AdminAcceessIPWhiteListMiddleware(object):
         """
         # If disabled or not enabled raise MiddleWareNotUsed so django
         # processes next middleware.
-        self.ENABLED = getattr(settings, 'ADMIN_ACCEES_WHITELIST_ENABLED', False)
-        self.DEBUG = getattr(settings, 'ADMIN_ACCEES_WHITELIST_DEBUG', False)
-        self.USE_HTTP_X_FORWARDED_FOR = getattr(settings, 'ADMIN_ACCEES_WHITELIST_USE_HTTP_X_FORWARDED_FOR', False)
-        self.ADMIN_ACCEES_WHITELIST_MESSAGE = getattr(settings, 'ADMIN_ACCEES_WHITELIST_MESSAGE', 'You are banned.')
+        self.ENABLED = getattr(settings, 'ADMIN_ACCESS_WHITELIST_ENABLED', False)
+        self.DEBUG = getattr(settings, 'ADMIN_ACCESS_WHITELIST_DEBUG', False)
+        self.USE_HTTP_X_FORWARDED_FOR = getattr(settings, 'ADMIN_ACCESS_WHITELIST_USE_HTTP_X_FORWARDED_FOR', False)
+        self.ADMIN_ACCESS_WHITELIST_MESSAGE = getattr(settings, 'ADMIN_ACCESS_WHITELIST_MESSAGE', 'You are banned.')
 
         if not self.ENABLED:
             raise MiddlewareNotUsed("django-banish is not enabled via settings.py")
@@ -29,8 +29,8 @@ class AdminAcceessIPWhiteListMiddleware(object):
         log.debug("[django-admin-ip-whitelist] status = enabled")
 
         # Prefix All keys in cache to avoid key collisions
-        self.ABUSE_PREFIX = 'DJANGO_ADMIN_ACCEES_WHITELIST_ABUSE:'
-        self.WHITELIST_PREFIX = 'DJANGO_ADMIN_ACCEES_WHITELIST_WHITELIST:'
+        self.ABUSE_PREFIX = 'DJANGO_ADMIN_ACCESS_WHITELIST_ABUSE:'
+        self.WHITELIST_PREFIX = 'DJANGO_ADMIN_ACCESS_WHITELIST_WHITELIST:'
 
         for whitelist in DjangoAdminAccessIPWhitelist.objects.all():
             cache_key = self.WHITELIST_PREFIX + whitelist.ip
@@ -55,7 +55,7 @@ class AdminAcceessIPWhiteListMiddleware(object):
         if self.is_whitelisted(ip):
             return None
         else:
-            return self.http_response_forbidden(self.ADMIN_ACCEES_WHITELIST_MESSAGE, content_type="text/html")
+            return self.http_response_forbidden(self.ADMIN_ACCESS_WHITELIST_MESSAGE + '\n<!-- {} -->'.format(ip), content_type="text/html")
 
     @staticmethod
     def http_response_forbidden(message, content_type):
