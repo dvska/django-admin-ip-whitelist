@@ -5,7 +5,7 @@ from django.conf import settings
 from django.http import HttpResponseForbidden
 from django.core.exceptions import MiddlewareNotUsed
 from django.core.cache import cache
-from models import DjangoAdminAccessIPWhitelist
+from models import DjangoAdminAccessIPWhitelist, ADMIN_ACCESS_WHITELIST_PREFIX
 
 log = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class AdminAcceessIPWhiteListMiddleware(object):
 
         # Prefix All keys in cache to avoid key collisions
         self.ABUSE_PREFIX = 'DJANGO_ADMIN_ACCESS_WHITELIST_ABUSE:'
-        self.WHITELIST_PREFIX = 'DJANGO_ADMIN_ACCESS_WHITELIST_WHITELIST:'
+        self.WHITELIST_PREFIX = ADMIN_ACCESS_WHITELIST_PREFIX
 
         for whitelist in DjangoAdminAccessIPWhitelist.objects.all():
             cache_key = self.WHITELIST_PREFIX + whitelist.ip
