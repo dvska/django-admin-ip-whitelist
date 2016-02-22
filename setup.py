@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-Version = 0.1.1
+Version = '0.1.1'
 setup(name='django-admin-ip-whitelist',
       version=Version,
       # install_requires='redis',
