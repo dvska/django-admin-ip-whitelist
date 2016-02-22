@@ -38,13 +38,13 @@ Install django-admin-ip-whitelist. Make sure it is on your PYTHONPATH or in your
 
 In your django project settings.py you must set the following options:
 
-    1) Add 'admin_ip_whitelist.middleware.AdminAcceessIPWhiteListMiddleware' to MIDDLEWARE_CLASSES
+    1) Add 'admin_ip_whitelist.middleware.AdminAccessIPWhiteListMiddleware' to MIDDLEWARE_CLASSES
 
     2) Add 'admin_ip_whitelist' to INSTALLED_APPS
 
-    3) Add ADMIN_ACCEES_WHITELIST_ENABLED = True to enable django-admin-ip-whitelis (handy if you lock yourself out, you can just set this to False)
+    3) Add ADMIN_ACCESS_WHITELIST_ENABLED = True to enable django-admin-ip-whitelis (handy if you lock yourself out, you can just set this to False)
     
-    4) Optionally set ADMIN_ACCEES_WHITELIST_MESSAGE (default is "You are banned.") to change default message for banned user.
+    4) Optionally set ADMIN_ACCESS_WHITELIST_MESSAGE (default is "You are banned.") to change default message for banned user.
 
 Issues
 ------
