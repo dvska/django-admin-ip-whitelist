@@ -2,9 +2,9 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 
 
-from django.db import models
-from django.db.models.signals import pre_save, post_delete
 from django.core.cache import cache
+from django.db import models
+from django.db.models.signals import post_delete, pre_save
 
 ADMIN_ACCESS_WHITELIST_PREFIX = 'DJANGO_ADMIN_ACCESS_WHITELIST:'
 WHITELIST_PREFIX = 'DJANGO_ADMIN_ACCESS_WHITELIST:'
