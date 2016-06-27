@@ -15,10 +15,10 @@ class DjangoAdminAccessIPWhitelist(models.Model):
     ip = models.CharField(max_length=255, help_text='Enter an IP to whitelist')
 
     def __unicode__(self):
-        return "Whitelisted %s (%s) " % (self.ip, self.whitelist_reason)
+        return "Whitelisted %s (%s)" % (self.ip, self.whitelist_reason)
 
     def __str__(self):
-        return self.__unicode__()
+        return self.__unicode__().encode('utf-8')
 
     class Meta:
         permissions = (("can_whitelist_user", "Can Whitelist User"),)
