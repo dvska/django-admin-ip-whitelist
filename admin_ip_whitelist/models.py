@@ -3,7 +3,7 @@
 
 
 from django.db import models
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import pre_save, post_delete
 from django.core.cache import cache
 
 ADMIN_ACCESS_WHITELIST_PREFIX = 'DJANGO_ADMIN_ACCESS_WHITELIST:'
@@ -33,8 +33,21 @@ def _generate_cache_key(instance):
 
 def _update_cache(sender, **kwargs):
     # add a whitelist entry
-    instance = kwargs.get('instance')
-    cache_key = _generate_cache_key(instance)
+
+    new_instance = kwargs.get('instance')
+
+    # If the entry has changed, remove the old cache entry and
+    # add the new one.
+    if new_instance.pk:
+        old_instance = DjangoAdminAccessIPWhitelist.objects.get(
+            pk=new_instance.pk)
+
+        if _generate_cache_key(old_instance) != \
+                _generate_cache_key(new_instance):
+            old_cache_key = _generate_cache_key(old_instance)
+            cache.delete(old_cache_key)
+
+    cache_key = _generate_cache_key(new_instance)
     cache.set(cache_key, "1")
 
 
@@ -44,5 +57,5 @@ def _delete_cache(sender, **kwargs):
     cache.delete(cache_key)
 
 
-post_save.connect(_update_cache, sender=DjangoAdminAccessIPWhitelist)
+pre_save.connect(_update_cache, sender=DjangoAdminAccessIPWhitelist)
 post_delete.connect(_delete_cache, sender=DjangoAdminAccessIPWhitelist)
