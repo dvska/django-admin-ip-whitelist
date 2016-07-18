@@ -24,7 +24,7 @@ class AdminAccessIPWhiteListMiddleware(object):
         self.ADMIN_ACCESS_WHITELIST_MESSAGE = getattr(settings, 'ADMIN_ACCESS_WHITELIST_MESSAGE', 'You are banned.')
 
         if not self.ENABLED:
-            raise MiddlewareNotUsed("django-banish is not enabled via settings.py")
+            raise MiddlewareNotUsed("django-admin-ip-whitelist is not enabled via settings.py")
 
         log.debug("[django-admin-ip-whitelist] status = enabled")
 
