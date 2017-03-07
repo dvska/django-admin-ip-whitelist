@@ -4,7 +4,8 @@ import django
 from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import MiddlewareNotUsed
-from django.http import HttpResponseForbidden
+from django.http import HttpResponse
+from django.core.urlresolvers import reverse
 
 from models import DjangoAdminAccessIPWhitelist, ADMIN_ACCESS_WHITELIST_PREFIX
 
@@ -22,6 +23,8 @@ class AdminAccessIPWhiteListMiddleware(object):
         self.ENABLED = getattr(settings, 'ADMIN_ACCESS_WHITELIST_ENABLED', False)
         self.USE_HTTP_X_FORWARDED_FOR = getattr(settings, 'ADMIN_ACCESS_WHITELIST_USE_HTTP_X_FORWARDED_FOR', False)
         self.ADMIN_ACCESS_WHITELIST_MESSAGE = getattr(settings, 'ADMIN_ACCESS_WHITELIST_MESSAGE', 'You are banned.')
+        self.FAILURE_RESPONSE_CODE = getattr(settings, 'ADMIN_ACCESS_FAILURE_RESPONSE_CODE', 403)
+        self.ADMIN_BASE_URL = reverse('admin:index')
 
         if not self.ENABLED:
             raise MiddlewareNotUsed("django-admin-ip-whitelist is not enabled via settings.py")
@@ -43,7 +46,7 @@ class AdminAccessIPWhiteListMiddleware(object):
         return ip
 
     def process_request(self, request):
-        if not request.path.startswith('/admin'):
+        if not request.path.startswith(self.ADMIN_BASE_URL):
             return None
 
         ip = self._get_ip(request)
@@ -55,15 +58,14 @@ class AdminAccessIPWhiteListMiddleware(object):
         if self.is_whitelisted(ip):
             return None
         else:
-            return self.http_response_forbidden(self.ADMIN_ACCESS_WHITELIST_MESSAGE + '\n<!-- {} -->'.format(ip), content_type="text/html")
+            return self.http_response(self.ADMIN_ACCESS_WHITELIST_MESSAGE, content_type="text/html")
 
-    @staticmethod
-    def http_response_forbidden(message, content_type):
+    def http_response(self, message, content_type):
         if django.VERSION[:2] > (1, 3):
             kwargs = {'content_type': content_type}
         else:
             kwargs = {'mimetype': content_type}
-        return HttpResponseForbidden(message, **kwargs)
+        return HttpResponse(message, status=self.FAILURE_RESPONSE_CODE, **kwargs)
 
     def is_whitelisted(self, ip):
         # If a whitelist key exists, return True to allow the request through
