@@ -6,7 +6,7 @@ from django.core.cache import cache
 from django.core.exceptions import MiddlewareNotUsed
 from django.http import HttpResponseForbidden
 
-from models import DjangoAdminAccessIPWhitelist, ADMIN_ACCESS_WHITELIST_PREFIX
+from .models import DjangoAdminAccessIPWhitelist, ADMIN_ACCESS_WHITELIST_PREFIX
 
 log = logging.getLogger(__name__)
 
